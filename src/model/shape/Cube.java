@@ -2,6 +2,7 @@ package model.shape;
 
 import model.Visibility;
 import texture.Texture;
+import util.Vector2f;
 import util.Vector3f;
 
 import java.util.ArrayList;
@@ -15,17 +16,24 @@ public class Cube
     private Visibility visibility;
     private ArrayList<Vector3f> points;
     private ArrayList<Vector3f> normals;
+    private ArrayList<Vector2f> textureCoordinates;
+
     private Vector3f center;
     private float width;
     private float height;
     private float depth;
 
-    public Cube(Vector3f center, float width, float height, float depth)
+    public Cube(Vector3f center, float width, float height, float depth, Visibility visibility)
     {
         this.center = center;
         this.width = width;
         this.height = height;
         this.depth = depth;
+        this.visibility = visibility;
+
+        this.points = new ArrayList<>();
+        this.normals = new ArrayList<>();
+        this.textureCoordinates = new ArrayList<>();
     }
 
     private void addPoints()
@@ -74,11 +82,6 @@ public class Cube
         points.add(new Vector3f(maxX, minY, maxZ));
     }
 
-    public ArrayList<Vector3f> getPoints()
-    {
-        return points;
-    }
-
     public void calculateNormals()
     {
         for (int i = 0; i < points.size(); i += 4)
@@ -86,6 +89,17 @@ public class Cube
             Vector3f normal = getNormal(i);
             normals.add(normal);
             normals.add(normal);
+        }
+    }
+
+    public void addTextureCoodinates()
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            textureCoordinates.add(new Vector2f(0.0f, 0.0f));
+            textureCoordinates.add(new Vector2f((float) i * 1.0f / 6.0f, 0.0f));
+            textureCoordinates.add(new Vector2f(0.0f, 1.0f));
+            textureCoordinates.add(new Vector2f((float) i * 1.0f / 6.0f, 1.0f));
         }
     }
 
@@ -104,5 +118,20 @@ public class Cube
         }
 
         return normal;
+    }
+
+    public ArrayList<Vector3f> getPoints()
+    {
+        return points;
+    }
+
+    public ArrayList<Vector3f> getNormals()
+    {
+        return normals;
+    }
+
+    public ArrayList<Vector2f> getTextureCoordinates()
+    {
+        return textureCoordinates;
     }
 }
