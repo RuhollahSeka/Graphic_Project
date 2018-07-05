@@ -1,5 +1,7 @@
 package model.shape;
 
+import model.Visibility;
+import texture.Texture;
 import util.Vector3f;
 
 import java.util.ArrayList;
@@ -9,7 +11,10 @@ import java.util.ArrayList;
  */
 public class Cube
 {
+    private Texture texture;
+    private Visibility visibility;
     private ArrayList<Vector3f> points;
+    private ArrayList<Vector3f> normals;
     private Vector3f center;
     private float width;
     private float height;
@@ -72,5 +77,32 @@ public class Cube
     public ArrayList<Vector3f> getPoints()
     {
         return points;
+    }
+
+    public void calculateNormals()
+    {
+        for (int i = 0; i < points.size(); i += 4)
+        {
+            Vector3f normal = getNormal(i);
+            normals.add(normal);
+            normals.add(normal);
+        }
+    }
+
+    private Vector3f getNormal(int startPointIndex)
+    {
+        Vector3f firstPoint = points.get(startPointIndex);
+        Vector3f secondPoint = points.get(startPointIndex + 1);
+        Vector3f thirdPoint = points.get(startPointIndex + 2);
+
+        Vector3f vectorFromCenter = firstPoint.subtract(center);
+        Vector3f normal = firstPoint.subtract(secondPoint).cross(thirdPoint.subtract(secondPoint));
+        if ((normal.dot(vectorFromCenter) < 0 && visibility == Visibility.VisibleOutside) ||
+                (normal.dot(vectorFromCenter) > 0 && visibility == Visibility.VisibleInside))
+        {
+            normal.negate();
+        }
+
+        return normal;
     }
 }

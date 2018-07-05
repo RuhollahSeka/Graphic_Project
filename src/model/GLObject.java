@@ -1,6 +1,7 @@
 package model;
 
 import model.shape.Cube;
+import util.Vector3f;
 
 import java.util.ArrayList;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
  */
 public abstract class GLObject
 {
-    private float[] vertices;
+    private Float[] vertices;
     private float[] textureCoordinates;
     private float[] normals;
     private ArrayList<Cube> cubicParts;
@@ -17,7 +18,39 @@ public abstract class GLObject
 
     protected void initVertices()
     {
+        ArrayList<Vector3f> allPoints = collectPoints();
+        ArrayList<Float> verticesList = new ArrayList<>();
 
+        for (int i = 0; i < allPoints.size(); i += 4)
+        {
+            addPointComponents(allPoints, i, verticesList);
+            addPointComponents(allPoints, i + 1, verticesList);
+        }
+
+        vertices = verticesList.toArray(new Float[verticesList.size()]);
+    }
+
+    private void addPointComponents(ArrayList<Vector3f> allPoints, int startIndex, ArrayList<Float> verticesList)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            Vector3f point = allPoints.get(startIndex + i);
+            verticesList.add(point.x);
+            verticesList.add(point.y);
+            verticesList.add(point.z);
+        }
+    }
+
+    private ArrayList<Vector3f> collectPoints()
+    {
+        ArrayList<Vector3f> points = new ArrayList<>();
+
+        for (Cube cubicPart : cubicParts)
+        {
+            points.addAll(cubicPart.getPoints());
+        }
+
+        return points;
     }
 
     protected abstract void initTextures();
@@ -27,7 +60,7 @@ public abstract class GLObject
         // TODO
     }
 
-    public float[] getVertices()
+    public Float[] getVertices()
     {
         return vertices;
     }
