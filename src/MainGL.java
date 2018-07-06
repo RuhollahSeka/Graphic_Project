@@ -158,7 +158,7 @@ public class MainGL
     {
         //Front Wall
         GLObject obj = new GLObject();
-        obj.addCube(new Vector3f(0f, 7.5f, 11f), 20f, 15f, 1f, Visibility.VisibleOutside, "..\\textures\\wallTile.jpg", 5f, 5f);
+        obj.addCube(new Vector3f(0f, 7.5f, 11f), 20f, 15f, 1f, Visibility.VisibleOutside, "..\\textures\\wallTile.jpg", 5f, 5f) ;
         objectsMap.put("Front Wall", obj);
 
         //Left Wall
