@@ -17,8 +17,18 @@ public class Texture
     private int height;
     private String fileName;
 
+    //How long a single tile covers
+    private float x;
+    private float y;
+
     public Texture() {
         id = glGenTextures();
+    }
+
+    public Texture(float x, float y){
+        this();
+        this.x = x;
+        this.y = y;
     }
 
     public void bind() {
@@ -62,6 +72,13 @@ public class Texture
 
     public void delete() {
         glDeleteTextures(id);
+    }
+
+    public float getX() {
+        return x;
+    }
+    public float getY() {
+        return y;
     }
 
     public int getWidth() {
