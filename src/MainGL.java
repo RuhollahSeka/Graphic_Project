@@ -336,6 +336,12 @@ public class MainGL
         objectsMap.put("Clock", clock);
         objects.add(clock);
 
+        //Skybox
+        GLObject skybox = new GLObject();
+        skybox.addCube(new Vector3f(1000f, 1000f, 1000f), 0f, 500f, 0f, Visibility.VisibleInside, "textures\\sky.jpg");
+        objectsMap.put("Skybox", skybox);
+        objects.add(skybox);
+
     }
 
     private void loop() {
