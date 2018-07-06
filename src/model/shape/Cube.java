@@ -17,6 +17,7 @@ public class Cube
     private ArrayList<Vector3f> points;
     private ArrayList<Vector3f> normals;
     private ArrayList<Vector2f> textureCoordinates;
+    private DrawData drawData;
 
     private Vector3f center;
     private float width;
@@ -34,6 +35,14 @@ public class Cube
         this.points = new ArrayList<>();
         this.normals = new ArrayList<>();
         this.textureCoordinates = new ArrayList<>();
+        this.drawData = new DrawData();
+
+        addPoints();
+        calculateNormals();
+        addTextureCoordinates();
+        drawData.setVertices(this.points);
+        drawData.calculateNormals(this.normals);
+        drawData.setTextureCoordinates(this.textureCoordinates);
     }
 
     private void addPoints()
@@ -82,7 +91,7 @@ public class Cube
         points.add(new Vector3f(maxX, minY, maxZ));
     }
 
-    public void calculateNormals()
+    private void calculateNormals()
     {
         for (int i = 0; i < points.size(); i += 4)
         {
@@ -92,7 +101,7 @@ public class Cube
         }
     }
 
-    public void addTextureCoodinates()
+    private void addTextureCoordinates()
     {
         for (int i = 0; i < 6; i++)
         {
@@ -133,5 +142,10 @@ public class Cube
     public ArrayList<Vector2f> getTextureCoordinates()
     {
         return textureCoordinates;
+    }
+
+    public DrawData getDrawData()
+    {
+        return drawData;
     }
 }

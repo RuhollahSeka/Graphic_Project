@@ -1,4 +1,5 @@
 import camera.Camera;
+import model.GLObject;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -12,7 +13,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -31,27 +34,41 @@ public class MainGL
     private long window;
     private ArrayList<Integer> vaos;
     private ArrayList<Integer> vbos;
-    private Matrix4f projectionMatrix;
-    private Camera camera;
+    private int windowWidth;
+    private int windowHeight;
+    private GLCallbackHandler callbackHandler;
+
     private static final float FOV = 70.0f;
     private static final float NEAR_PLANE = 0.01f;
     private static final float FAR_PLANE = 10000.0f;
-    private int windowWidth;
-    private int windowHeight;
+    private Matrix4f projectionMatrix;
+    private Camera camera;
+
+    private HashMap<String, GLObject> objectsMap;
 
     public MainGL()
     {
         this.vaos = new ArrayList<>();
         this.vbos = new ArrayList<>();
+        this.objectsMap = new HashMap<>();
         this.camera = new Camera(new Vector3f(0, 0, 0), 0, 0, 0);
-        windowWidth = 1200;
-        windowHeight = 800;
+        this.callbackHandler = new GLCallbackHandler(camera);
+        this.windowWidth = 1200;
+        this.windowHeight = 800;
     }
 
     private void start() throws FileNotFoundException
     {
         init();
+        loop();
 
+        // Free the window callbacks and destroy the window
+        glfwFreeCallbacks(window);
+        glfwDestroyWindow(window);
+
+        // Terminate GLFW and free the error callback
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
     }
 
     private void init() throws FileNotFoundException
@@ -109,7 +126,20 @@ public class MainGL
 
         GL.createCapabilities();
 
-        // TODO create cubes and objects here?
+        addObjects();
+        addCallbacks();
+    }
+
+    private void addCallbacks()
+    {
+        glfwSetKeyCallback(window, callbackHandler.getKeyCallback());
+        glfwSetMouseButtonCallback(window, callbackHandler.getMouseButtonCallback());
+        glfwSetCursorPosCallback(window, callbackHandler.getCursorPosCallback());
+    }
+
+    private void addObjects()
+    {
+        // TODO hamid
     }
 
     private void loop() {
@@ -124,12 +154,9 @@ public class MainGL
 
             // TODO the rendering must happen here, we MUST do it clean, I'm still not sure exactly how
 
-            // TODO We have to handle poll events too, don't think about them now, I know how to them
-
             // Poll for window events. The key callback above will only be
             // invoked during this call.
             glfwPollEvents();
-
             glfwSwapBuffers(window); // swap the color buffers
         }
 
