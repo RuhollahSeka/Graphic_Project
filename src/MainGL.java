@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryStack;
 import util.Matrix4f;
 import util.Vector3f;
+import util.Vector4f;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -126,8 +127,23 @@ public class MainGL
 
         GL.createCapabilities();
 
+        createProjectionMatrix();
         addObjects();
         addCallbacks();
+
+    }
+
+    private void createProjectionMatrix()
+    {
+        float aspect = (float) windowWidth / (float) windowHeight;
+        float yScale = 1.0f / (float) Math.tan(Math.toRadians(FOV / 2.0f));
+        float xScale = yScale / aspect;
+        float zp = FAR_PLANE + NEAR_PLANE;
+        float zm = FAR_PLANE - NEAR_PLANE;
+
+        projectionMatrix = new Matrix4f(new Vector4f(xScale, 0.0f, 0.0f, 0.0f),
+                new Vector4f(0.0f, yScale, 0.0f, 0.0f), new Vector4f(0.0f, 0.0f, -zp / zm, -1.0f),
+                new Vector4f(0.0f, 0.0f, -(2.0f*FAR_PLANE*NEAR_PLANE)/zm, 0));
     }
 
     private void addCallbacks()

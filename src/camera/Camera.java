@@ -1,5 +1,6 @@
 package camera;
 
+import util.Matrix4f;
 import util.Vector3f;
 
 /**
@@ -17,6 +18,16 @@ public class Camera
         this.rotX = rotX;
         this.rotY = rotY;
         this.rotZ = rotZ;
+    }
+
+    public Matrix4f getViewMatrix()
+    {
+        Matrix4f translationMatrix = Matrix4f.translate(-position.x, -position.y, -position.z);
+        Matrix4f xRotMatrix = Matrix4f.rotate(rotX, 1.0f, 0.0f, 0.0f);
+        Matrix4f yRotMatrix = Matrix4f.rotate(rotY, 0.0f, 1.0f, 0.0f);
+        Matrix4f zRotMatrix = Matrix4f.rotate(rotZ, 0.0f, 0.0f, 1.0f);
+
+        return zRotMatrix.multiply(yRotMatrix.multiply(xRotMatrix.multiply(translationMatrix)));
     }
 
     public Vector3f getPosition()

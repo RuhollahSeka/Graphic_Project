@@ -1,5 +1,6 @@
 package model.shape;
 
+import model.TransformationData;
 import model.Visibility;
 import texture.Texture;
 import util.Vector2f;
@@ -18,13 +19,14 @@ public class Cube
     private ArrayList<Vector3f> normals;
     private ArrayList<Vector2f> textureCoordinates;
     private DrawData drawData;
+    private TransformationData transformationData;
 
     private Vector3f center;
     private float width;
     private float height;
     private float depth;
 
-    public Cube(Vector3f center, float width, float height, float depth, Visibility visibility)
+    public Cube(Vector3f center, float width, float height, float depth, Visibility visibility, String texturePath)
     {
         this.center = center;
         this.width = width;
@@ -32,6 +34,7 @@ public class Cube
         this.depth = depth;
         this.visibility = visibility;
 
+        this.texture = Texture.loadTexture(texturePath);
         this.points = new ArrayList<>();
         this.normals = new ArrayList<>();
         this.textureCoordinates = new ArrayList<>();

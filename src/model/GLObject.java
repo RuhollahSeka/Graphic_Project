@@ -1,75 +1,47 @@
 package model;
 
 import model.shape.Cube;
-import util.Vector2f;
+import util.Vector3f;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by msi1 on 7/5/2018.
  */
-public abstract class GLObject
+public class GLObject
 {
-    private Float[] vertices;
-    private float[] normals;
-    private Float[] textureCoordinates;
     private ArrayList<Cube> cubicParts;
+    private HashMap<String, Cube> importantParts;
+    private TransformationData transformationData;
 
     public GLObject()
     {
-        cubicParts = new ArrayList<>();
-        initTextureCoordinates();
+        this.cubicParts = new ArrayList<>();
+        this.importantParts = new HashMap<>();
     }
 
-    // Add Texture Coordinates
-    private void initTextureCoordinates()
+    public void addCube(Vector3f center, float width, float height, float depth,
+                        Visibility visibility, String texturePath)
     {
-        ArrayList<Vector2f> allTextureCoordinates = collectTextureCoordinates();
-        ArrayList<Float> coordinatesList = new ArrayList<>();
-
-        for (int i = 0; i < allTextureCoordinates.size(); i += 4)
-        {
-            addTextureComponents(allTextureCoordinates, i, coordinatesList);
-            addTextureComponents(allTextureCoordinates, i + 1, coordinatesList);
-        }
-
-        textureCoordinates = coordinatesList.toArray(new Float[coordinatesList.size()]);
+        cubicParts.add(new Cube(center, width, height, depth, visibility, texturePath));
     }
 
-    private void addTextureComponents(ArrayList<Vector2f> allCoordinates, int startIndex, ArrayList<Float> coordinatesList)
+    public void addCube(Vector3f center, float width, float height, float depth,
+                        Visibility visibility, String texturePath, String name)
     {
-        for (int i = 0; i < 3; i++)
-        {
-            Vector2f textureCoordinate = allCoordinates.get(startIndex + i);
-            coordinatesList.add(textureCoordinate.x);
-            coordinatesList.add(textureCoordinate.y);
-        }
+        Cube newCube = new Cube(center, width, height, depth, visibility, texturePath);
+        cubicParts.add(newCube);
+        importantParts.put(name, newCube);
     }
 
-    private ArrayList<Vector2f> collectTextureCoordinates()
+    public Cube getPart(String partName)
     {
-        ArrayList<Vector2f> allTextureCoordinates = new ArrayList<>();
-
-        for (Cube cubicPart : cubicParts)
-        {
-            allTextureCoordinates.addAll(cubicPart.getTextureCoordinates());
-        }
-
-        return allTextureCoordinates;
+        return importantParts.get(partName);
     }
 
-    public Float[] getVertices()
+    public ArrayList<Cube> getCubicParts()
     {
-        return vertices;
-    }
-
-    public Float[] getTextureCoordinates()
-    {
-        return textureCoordinates;
-    }
-
-    public float[] getNormals()
-    {
-        return normals;
+        return cubicParts;
     }
 }

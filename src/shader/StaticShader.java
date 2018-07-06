@@ -1,7 +1,6 @@
 package shader;
 
 import camera.Camera;
-import util.Calculator;
 import util.Matrix4f;
 
 import java.io.FileNotFoundException;
@@ -41,6 +40,6 @@ public class StaticShader extends ShaderProgram
 
     public void loadViewMatrix(Camera camera)
     {
-        super.loadMatrix(location_viewMatrix, Calculator.createViewMatrix(camera));
+        super.loadMatrix(location_viewMatrix, camera.getViewMatrix());
     }
 }
