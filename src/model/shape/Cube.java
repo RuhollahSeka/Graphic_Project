@@ -49,6 +49,15 @@ public class Cube
         drawData.setTextureCoordinates(this.textureCoordinates);
     }
 
+
+    public Cube(Vector3f center, float width, float height, float depth, Visibility visibility, String texturePath, float x, float y)
+    {
+        this(center, width, height, depth, visibility, texturePath);
+        this.texture.setX(x);
+        this.texture.setY(y);
+    }
+
+
     private void addPoints()
     {
         float minX = center.x - (width / 2.0f);
@@ -114,6 +123,48 @@ public class Cube
             textureCoordinates.add(new Vector2f(0.0f, 1.0f));
             textureCoordinates.add(new Vector2f((float) i * 1.0f / 6.0f, 1.0f));
         }
+    }
+
+    private void addTiledTetureCoordinates()
+    {
+        float texX = texture.getX();
+        float texY = texture.getY();
+
+        //front
+        textureCoordinates.add(new Vector2f(0.0f, 0.0f));
+        textureCoordinates.add(new Vector2f( width / texX, 0.0f));
+        textureCoordinates.add(new Vector2f(0.0f, height / texY));
+        textureCoordinates.add(new Vector2f(width / texX / 6.0f, height / texY));
+
+        //back
+        textureCoordinates.add(new Vector2f(0.0f, 0.0f));
+        textureCoordinates.add(new Vector2f( width / texX, 0.0f));
+        textureCoordinates.add(new Vector2f(0.0f, height / texY));
+        textureCoordinates.add(new Vector2f(width / texX / 6.0f, height / texY));
+
+        //right
+        textureCoordinates.add(new Vector2f(0.0f, 0.0f));
+        textureCoordinates.add(new Vector2f( depth / texX, 0.0f));
+        textureCoordinates.add(new Vector2f(0.0f, height / texY));
+        textureCoordinates.add(new Vector2f(depth / texX / 6.0f, height / texY));
+
+        //left
+        textureCoordinates.add(new Vector2f(0.0f, 0.0f));
+        textureCoordinates.add(new Vector2f( depth / texX, 0.0f));
+        textureCoordinates.add(new Vector2f(0.0f, height / texY));
+        textureCoordinates.add(new Vector2f(depth / texX / 6.0f, height / texY));
+
+        //top
+        textureCoordinates.add(new Vector2f(0.0f, 0.0f));
+        textureCoordinates.add(new Vector2f( width / texX, 0.0f));
+        textureCoordinates.add(new Vector2f(0.0f, depth / texY));
+        textureCoordinates.add(new Vector2f(width / texX / 6.0f, depth / texY));
+
+        //bottom
+        textureCoordinates.add(new Vector2f(0.0f, 0.0f));
+        textureCoordinates.add(new Vector2f( width / texX, 0.0f));
+        textureCoordinates.add(new Vector2f(0.0f, depth / texY));
+        textureCoordinates.add(new Vector2f(width / texX / 6.0f, depth / texY));
     }
 
     private Vector3f getNormal(int startPointIndex)
