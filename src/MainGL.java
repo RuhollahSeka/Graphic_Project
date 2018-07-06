@@ -280,16 +280,32 @@ public class MainGL
         objectsMap.put("Left Wall", leftWall);
         objects.add(leftWall);
 
-//        GLObject frontWall = new GLObject();
-//        frontWall.addCube(new Vector3f(0.0f, 0.0f, -0.5f), 0.5f, 0.5f, 0.5f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
-//        objectsMap.put("Front Wall", frontWall);
-//        objects.add(frontWall);
-
         //Right Wall
-      /*  obj = new GLObject();
-        obj.addCube(new Vector3f(10f, 7.5f, 1f), 1f, 15f, 20f, Visibility.VisibleOutside, "..\\textures\\wallTile.jpg");
-        objectsMap.put("Right Wall", obj);*/
+        GLObject rightWall = new GLObject();
+        rightWall.addCube(new Vector3f(-10f, 3.25f, 1f), 1f, 6.5f, 20f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
+        rightWall.addCube(new Vector3f(-10f, 13.25f, 1f), 1f, 3.5f, 20f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
+        rightWall.addCube(new Vector3f(-10f, 7.5f, -5.25f), 1, 5f, 7.5f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
+        rightWall.addCube(new Vector3f(-10f, 7.5f, -0.5f), 0.5f, 0.5f, 0.5f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
+        objectsMap.put("Right Wall", rightWall);
+        objects.add(rightWall);
 
+        //Back Wall
+        GLObject backWall = new GLObject();
+        backWall.addCube(new Vector3f(0f, 12.5f, -9f), 20f, 5f, 1f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
+        backWall.addCube(new Vector3f(-6.25f, 7.5f, -9f), 7.5f, 10f, 1f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
+        backWall.addCube(new Vector3f(6.25f, 7.5f, -9f), 7.5f, 10f, 1f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
+        objectsMap.put("Back Wall", backWall);
+        objects.add(backWall);
+
+        //Table
+        GLObject table = new GLObject();
+        table.addCube(new Vector3f(-1f, 3f, 0f), 6f, 0.5f, 4f, Visibility.VisibleOutside, "textures\\tableTile.jpg", 5f, 5f);
+        table.addCube(new Vector3f(-3.3f, 1.5f, 1.3f), 0.5f, 3f, 0.5f, Visibility.VisibleOutside, "textures\\tableTile.jpg", 5f, 5f);
+        table.addCube(new Vector3f(1.3f, 1.5f, 1.3f), 0.5f, 3f, 0.5f, Visibility.VisibleOutside, "textures\\tableTile.jpg", 5f, 5f);
+        table.addCube(new Vector3f(-3.3f, 1.5f, -1.3f), 0.5f, 3f, 0.5f, Visibility.VisibleOutside, "textures\\tableTile.jpg", 5f, 5f);
+        table.addCube(new Vector3f(1.3f, 1.5f, -1.3f), 0.5f, 3f, 0.5f, Visibility.VisibleOutside, "textures\\tableTile.jpg", 5f, 5f);
+        objectsMap.put("Table", table);
+        objects.add(table);
     }
 
     private void loop() {
