@@ -73,4 +73,24 @@ public class DrawData
             coordinatesList.add(textureCoordinate.y);
         }
     }
+
+    public Float[] getVertices()
+    {
+        return vertices;
+    }
+
+    public Float[] getNormals()
+    {
+        return normals;
+    }
+
+    public Float[] getColors()
+    {
+        return colors;
+    }
+
+    public Float[] getTextureCoordinates()
+    {
+        return textureCoordinates;
+    }
 }

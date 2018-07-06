@@ -1,6 +1,7 @@
 package model;
 
 import model.shape.Cube;
+import util.Matrix4f;
 import util.Vector3f;
 
 import java.util.ArrayList;
@@ -54,6 +55,11 @@ public class GLObject
     public Cube getPart(String partName)
     {
         return importantParts.get(partName);
+    }
+
+    public Matrix4f getTransformationMatrix()
+    {
+        return transformationData.getTransformationMatrix();
     }
 
     public ArrayList<Cube> getCubicParts()
