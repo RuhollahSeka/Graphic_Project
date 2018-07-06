@@ -27,10 +27,26 @@ public class GLObject
         cubicParts.add(new Cube(center, width, height, depth, visibility, texturePath));
     }
 
+
+    public void addCube(Vector3f center, float width, float height, float depth,
+                        Visibility visibility, String texturePath, float x, float y)
+    {
+        cubicParts.add(new Cube(center, width, height, depth, visibility, texturePath, x, y));
+    }
+
+
     public void addCube(Vector3f center, float width, float height, float depth,
                         Visibility visibility, String texturePath, String name)
     {
         Cube newCube = new Cube(center, width, height, depth, visibility, texturePath);
+        cubicParts.add(newCube);
+        importantParts.put(name, newCube);
+    }
+
+    public void addCube(Vector3f center, float width, float height, float depth,
+                        Visibility visibility, String texturePath, String name, float x, float y)
+    {
+        Cube newCube = new Cube(center, width, height, depth, visibility, texturePath, x, y);
         cubicParts.add(newCube);
         importantParts.put(name, newCube);
     }

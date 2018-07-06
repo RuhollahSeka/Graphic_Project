@@ -48,6 +48,15 @@ public class Cube
         drawData.setTextureCoordinates(this.textureCoordinates);
     }
 
+
+    public Cube(Vector3f center, float width, float height, float depth, Visibility visibility, String texturePath, float x, float y)
+    {
+        this(center, width, height, depth, visibility, texturePath);
+        this.texture.setX(x);
+        this.texture.setY(y);
+    }
+
+
     private void addPoints()
     {
         float minX = center.x - (width / 2.0f);

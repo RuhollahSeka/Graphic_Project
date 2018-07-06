@@ -25,12 +25,6 @@ public class Texture
         id = glGenTextures();
     }
 
-    public Texture(float x, float y){
-        this();
-        this.x = x;
-        this.y = y;
-    }
-
     public void bind() {
         glBindTexture(GL_TEXTURE_2D, id);
     }
@@ -77,9 +71,14 @@ public class Texture
     public float getX() {
         return x;
     }
+
+    public void setX(float x){this.x = x;}
+
     public float getY() {
         return y;
     }
+
+    public void setY(float y){this.y = y;}
 
     public int getWidth() {
         return width;
