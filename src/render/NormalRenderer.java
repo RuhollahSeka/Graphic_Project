@@ -30,7 +30,9 @@ public class NormalRenderer
 
     public void loadProjectionMatrix(Matrix4f projectionMatrix)
     {
+        shader.start();
         shader.loadProjectionMatrix(projectionMatrix);
+        shader.stop();
     }
 
     public void render(GLObject object, Camera camera, Vector3f diffuseColor)

@@ -45,9 +45,9 @@ public class DrawData
         for (int i = 0; i < normalsList.size(); i++)
         {
             Vector3f normal = normalsList.get(i);
-            normals[i] = normal.x;
-            normals[i + 1] = normal.y;
-            normals[i + 2] = normal.z;
+            normals[i*3] = normal.x;
+            normals[i*3 + 1] = normal.y;
+            normals[i*3 + 2] = normal.z;
         }
     }
 

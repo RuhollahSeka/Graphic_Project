@@ -1,8 +1,8 @@
 import camera.Camera;
 import model.GLObject;
+import model.Visibility;
 import model.shape.Cube;
 import model.shape.DrawData;
-import model.Visibility;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.*;
@@ -60,7 +60,7 @@ public class MainGL
         this.objects = new ArrayList<>();
         this.objectsMap = new HashMap<>();
         this.diffuseColor = new Vector3f(1.0f, 1.0f, 1.0f);
-        this.camera = new Camera(new Vector3f(0, 7.5f, 8.0f), 0, 0, 0);
+        this.camera = new Camera(new Vector3f(0.0f, 0.0f, 0.0f), 0, 0, 0);
         this.callbackHandler = new GLCallbackHandler(camera);
         this.windowWidth = 1200;
         this.windowHeight = 800;
@@ -147,6 +147,7 @@ public class MainGL
     {
         normalRenderer = new NormalRenderer("NormalVertexShader.vert",
                 "NormalFragmentShader.frag", vaos.get(0));
+        normalRenderer.loadProjectionMatrix(projectionMatrix);
     }
 
     private void setVao()
@@ -268,14 +269,21 @@ public class MainGL
     private void addObjects()
     {
         //Front Wall
-        GLObject obj = new GLObject();
-        obj.addCube(new Vector3f(0f, 7.5f, 11f), 20f, 15f, 1f, Visibility.VisibleOutside, "..\\textures\\wallTile.jpg", 5f, 5f) ;
-        objectsMap.put("Front Wall", obj);
+        GLObject frontWall = new GLObject();
+        frontWall.addCube(new Vector3f(0f, 7.5f, 11.0f), 20f, 15f, 1f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
+        objectsMap.put("Front Wall", frontWall);
+        objects.add(frontWall);
 
         //Left Wall
-        obj = new GLObject();
-        obj.addCube(new Vector3f(-10f, 7.5f, 1f), 1f, 15f, 20f, Visibility.VisibleOutside, "..\\textures\\wallTile.jpg", 5f, 5f);
-        objectsMap.put("Left Wall", obj);
+        GLObject leftWall = new GLObject();
+        leftWall.addCube(new Vector3f(-10f, 7.5f, 1f), 1f, 15f, 20f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
+        objectsMap.put("Left Wall", leftWall);
+        objects.add(leftWall);
+
+//        GLObject frontWall = new GLObject();
+//        frontWall.addCube(new Vector3f(0.0f, 0.0f, -0.5f), 0.5f, 0.5f, 0.5f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
+//        objectsMap.put("Front Wall", frontWall);
+//        objects.add(frontWall);
 
         //Right Wall
       /*  obj = new GLObject();

@@ -16,10 +16,18 @@ public class GLObject
     private HashMap<String, Cube> importantParts;
     private TransformationData transformationData;
 
+    public GLObject(Vector3f pointOnAxis, RotationAxisType rotationAxisType)
+    {
+        this.cubicParts = new ArrayList<>();
+        this.importantParts = new HashMap<>();
+        this.transformationData = new TransformationData(pointOnAxis, rotationAxisType);
+    }
+
     public GLObject()
     {
         this.cubicParts = new ArrayList<>();
         this.importantParts = new HashMap<>();
+        this.transformationData = new TransformationData();
     }
 
     public void addCube(Vector3f center, float width, float height, float depth,
@@ -50,6 +58,12 @@ public class GLObject
         Cube newCube = new Cube(center, width, height, depth, visibility, texturePath, x, y);
         cubicParts.add(newCube);
         importantParts.put(name, newCube);
+    }
+
+    public void setCubeTransformationData(String cubeName, Vector3f pointOnAxis, RotationAxisType rotationAxisType)
+    {
+        Cube cube = importantParts.get(cubeName);
+        cube.setTransformationData(new TransformationData(pointOnAxis, rotationAxisType));
     }
 
     public Cube getPart(String partName)

@@ -40,6 +40,7 @@ public class Cube
         this.normals = new ArrayList<>();
         this.textureCoordinates = new ArrayList<>();
         this.drawData = new DrawData();
+        this.transformationData = new TransformationData();
 
         addPoints();
         calculateNormals();
@@ -52,9 +53,28 @@ public class Cube
 
     public Cube(Vector3f center, float width, float height, float depth, Visibility visibility, String texturePath, float x, float y)
     {
-        this(center, width, height, depth, visibility, texturePath);
+        this.center = center;
+        this.width = width;
+        this.height = height;
+        this.depth = depth;
+        this.visibility = visibility;
+
+        this.texture = Texture.loadTexture(texturePath);
+        this.points = new ArrayList<>();
+        this.normals = new ArrayList<>();
+        this.textureCoordinates = new ArrayList<>();
+        this.drawData = new DrawData();
+        this.transformationData = new TransformationData();
+
         this.texture.setX(x);
         this.texture.setY(y);
+
+        addPoints();
+        calculateNormals();
+        addTiledTextureCoordinates();
+        drawData.setVertices(this.points);
+        drawData.calculateNormals(this.normals);
+        drawData.setTextureCoordinates(this.textureCoordinates);
     }
 
 
@@ -111,6 +131,10 @@ public class Cube
             Vector3f normal = getNormal(i);
             normals.add(normal);
             normals.add(normal);
+            normals.add(normal);
+            normals.add(normal);
+            normals.add(normal);
+            normals.add(normal);
         }
     }
 
@@ -125,7 +149,7 @@ public class Cube
         }
     }
 
-    private void addTiledTetureCoordinates()
+    private void addTiledTextureCoordinates()
     {
         float texX = texture.getX();
         float texY = texture.getY();
@@ -178,7 +202,7 @@ public class Cube
         if ((normal.dot(vectorFromCenter) < 0 && visibility == Visibility.VisibleOutside) ||
                 (normal.dot(vectorFromCenter) > 0 && visibility == Visibility.VisibleInside))
         {
-            normal.negate();
+            normal = normal.negate();
         }
 
         return normal;
@@ -187,6 +211,11 @@ public class Cube
     public Matrix4f getTransformationMatrix()
     {
         return transformationData.getTransformationMatrix();
+    }
+
+    public void setTransformationData(TransformationData transformationData)
+    {
+        this.transformationData = transformationData;
     }
 
     public ArrayList<Vector3f> getPoints()
