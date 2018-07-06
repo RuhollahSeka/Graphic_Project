@@ -1,17 +1,19 @@
 import camera.Camera;
 import model.GLObject;
+import model.shape.Cube;
+import model.shape.DrawData;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.*;
 import org.lwjgl.system.MemoryStack;
+import render.NormalRenderer;
 import util.Matrix4f;
 import util.Vector3f;
 import util.Vector4f;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,16 +45,21 @@ public class MainGL
     private static final float NEAR_PLANE = 0.01f;
     private static final float FAR_PLANE = 10000.0f;
     private Matrix4f projectionMatrix;
+    private Vector3f diffuseColor; // TODO change this with time
     private Camera camera;
 
     private HashMap<String, GLObject> objectsMap;
+    private ArrayList<GLObject> objects;
+    private NormalRenderer normalRenderer;
 
     public MainGL()
     {
         this.vaos = new ArrayList<>();
         this.vbos = new ArrayList<>();
+        this.objects = new ArrayList<>();
         this.objectsMap = new HashMap<>();
-        this.camera = new Camera(new Vector3f(0, 0, 0), 0, 0, 0);
+        this.diffuseColor = new Vector3f(1.0f, 1.0f, 1.0f);
+        this.camera = new Camera(new Vector3f(0, 7.5f, 8.0f), 0, 0, 0);
         this.callbackHandler = new GLCallbackHandler(camera);
         this.windowWidth = 1200;
         this.windowHeight = 800;
@@ -130,7 +137,111 @@ public class MainGL
         createProjectionMatrix();
         addObjects();
         addCallbacks();
+        createVao();
+        setVao();
+        createRenderers();
+    }
 
+    private void createRenderers() throws FileNotFoundException
+    {
+        normalRenderer = new NormalRenderer("NormalVertexShader.vert",
+                "NormalFragmentShader.frag", vaos.get(0));
+    }
+
+    private void setVao()
+    {
+        ArrayList<DrawData> drawData = collectDrawData();
+        ArrayList<Float[]> positions = collectPositions(drawData);
+        ArrayList<Float[]> normals = collectNormals(drawData);
+        ArrayList<Float[]> textureCoordinates = collectTextureCoordinates(drawData);
+
+        setVaoIndex(positions, 0, 3);
+        setVaoIndex(textureCoordinates, 1, 2);
+        setVaoIndex(normals, 2, 3);
+    }
+
+    private ArrayList<Float[]> collectTextureCoordinates(ArrayList<DrawData> drawData)
+    {
+        ArrayList<Float[]> textureCoordinates = new ArrayList<>();
+
+        for (DrawData data : drawData)
+        {
+            textureCoordinates.add(data.getTextureCoordinates());
+        }
+
+        return textureCoordinates;
+    }
+
+    private ArrayList<Float[]> collectNormals(ArrayList<DrawData> drawData)
+    {
+        ArrayList<Float[]> normals = new ArrayList<>();
+
+        for (DrawData data : drawData)
+        {
+            normals.add(data.getNormals());
+        }
+
+        return normals;
+    }
+
+    private ArrayList<Float[]> collectPositions(ArrayList<DrawData> drawData)
+    {
+        ArrayList<Float[]> positions = new ArrayList<>();
+
+        for (DrawData data : drawData)
+        {
+            positions.add(data.getVertices());
+        }
+
+        return positions;
+    }
+
+    private ArrayList<DrawData> collectDrawData()
+    {
+        ArrayList<DrawData> drawData = new ArrayList<>();
+
+        for (GLObject object : objects)
+        {
+            ArrayList<Cube> cubes = object.getCubicParts();
+            for (Cube cube : cubes)
+            {
+                drawData.add(cube.getDrawData());
+            }
+        }
+
+        return drawData;
+    }
+
+    private void setVaoIndex(ArrayList<Float[]> list, int index, int size)
+    {
+        int vaoId = vaos.get(0);
+        GL30.glBindVertexArray(vaoId);
+
+        try(MemoryStack stack = MemoryStack.stackPush())
+        {
+            FloatBuffer buffer = stack.mallocFloat(GLUtil.findSize(list));
+            for (Float[] array : list)
+            {
+                buffer.put(GLUtil.toPrimitiveFloatArray(array));
+            }
+
+            buffer.flip();
+
+            int vboId = GL15.glGenBuffers();
+            vbos.add(vboId);
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboId);
+            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+            GL20.glVertexAttribPointer(index, size, GL11.GL_FLOAT, false, 4 * size, 0);
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        }
+
+        GL30.glBindVertexArray(0);
+    }
+
+    private void createVao() // TODO this place might cause a problem
+    {
+        int vaoId = GL30.glGenVertexArrays();
+        vaos.add(vaoId);
     }
 
     private void createProjectionMatrix()
@@ -168,7 +279,10 @@ public class MainGL
             glEnable(GL_DEPTH_TEST);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-            // TODO the rendering must happen here, we MUST do it clean, I'm still not sure exactly how
+            for (GLObject object : objects)
+            {
+                normalRenderer.render(object, camera, diffuseColor);
+            }
 
             // Poll for window events. The key callback above will only be
             // invoked during this call.
@@ -190,6 +304,8 @@ public class MainGL
         {
             GL15.glDeleteBuffers(vboId);
         }
+
+        normalRenderer.cleanUp();
 
         // TODO clean cubes and objects here?
     }

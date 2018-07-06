@@ -3,6 +3,7 @@ package model.shape;
 import model.TransformationData;
 import model.Visibility;
 import texture.Texture;
+import util.Matrix4f;
 import util.Vector2f;
 import util.Vector3f;
 
@@ -132,6 +133,11 @@ public class Cube
         return normal;
     }
 
+    public Matrix4f getTransformationMatrix()
+    {
+        return transformationData.getTransformationMatrix();
+    }
+
     public ArrayList<Vector3f> getPoints()
     {
         return points;
@@ -150,5 +156,10 @@ public class Cube
     public DrawData getDrawData()
     {
         return drawData;
+    }
+
+    public Texture getTexture()
+    {
+        return texture;
     }
 }
