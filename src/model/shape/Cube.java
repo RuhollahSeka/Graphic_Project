@@ -142,9 +142,9 @@ public class Cube
     {
         for (int i = 1; i <= 6; i++)
         {
-            textureCoordinates.add(new Vector2f(0.0f, 0.0f));
+            textureCoordinates.add(new Vector2f(((float) i - 1.0f) * 1.0f / 6.0f, 0.0f));
             textureCoordinates.add(new Vector2f((float) i * 1.0f / 6.0f, 0.0f));
-            textureCoordinates.add(new Vector2f(0.0f, 1.0f));
+            textureCoordinates.add(new Vector2f(((float) i - 1.0f) * 1.0f / 6.0f, 1.0f));
             textureCoordinates.add(new Vector2f((float) i * 1.0f / 6.0f, 1.0f));
         }
     }
