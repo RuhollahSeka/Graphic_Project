@@ -60,7 +60,7 @@ public class MainGL
         this.objects = new ArrayList<>();
         this.objectsMap = new HashMap<>();
         this.diffuseColor = new Vector3f(1.0f, 1.0f, 1.0f);
-        this.camera = new Camera(new Vector3f(0.0f, 0.0f, 0.0f), 0, 0, 0);
+        this.camera = new Camera(new Vector3f(0.0f, 0.0f, 0.0f));
         this.callbackHandler = new GLCallbackHandler(camera);
         this.windowWidth = 1200;
         this.windowHeight = 800;
@@ -268,22 +268,22 @@ public class MainGL
 
     private void addObjects()
     {
-        //Front Wall
-        GLObject frontWall = new GLObject();
-        frontWall.addCube(new Vector3f(0f, 7.5f, 11.0f), 20f, 15f, 1f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
-        objectsMap.put("Front Wall", frontWall);
-        objects.add(frontWall);
-
-        //Left Wall
-        GLObject leftWall = new GLObject();
-        leftWall.addCube(new Vector3f(-10f, 7.5f, 1f), 1f, 15f, 20f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
-        objectsMap.put("Left Wall", leftWall);
-        objects.add(leftWall);
-
+//        //Front Wall
 //        GLObject frontWall = new GLObject();
-//        frontWall.addCube(new Vector3f(0.0f, 0.0f, -0.5f), 0.5f, 0.5f, 0.5f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
+//        frontWall.addCube(new Vector3f(0f, 7.5f, 11.0f), 20f, 15f, 1f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
 //        objectsMap.put("Front Wall", frontWall);
 //        objects.add(frontWall);
+//
+//        //Left Wall
+//        GLObject leftWall = new GLObject();
+//        leftWall.addCube(new Vector3f(-10f, 7.5f, 1f), 1f, 15f, 20f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
+//        objectsMap.put("Left Wall", leftWall);
+//        objects.add(leftWall);
+
+        GLObject frontWall = new GLObject();
+        frontWall.addCube(new Vector3f(0.0f, 0.0f, -1.0f), 0.5f, 0.5f, 0.5f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
+        objectsMap.put("Front Wall", frontWall);
+        objects.add(frontWall);
 
         //Right Wall
       /*  obj = new GLObject();
@@ -295,7 +295,7 @@ public class MainGL
     private void loop() {
         // Set the clear color
         glClearColor(0.4f, 0.7f, 1.0f, 1.0f);
-
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while ( !glfwWindowShouldClose(window) ) {
