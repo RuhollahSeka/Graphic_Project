@@ -4,6 +4,8 @@
 in vec2 pass_textureCoords;
 in vec3 pass_normals;
 in vec3 pass_posAfterTransformation;
+in float pass_selectionEffect;
+in float pass_alpha;
 in vec3 diffuseColor;
 
 uniform sampler2D textureSampler;
@@ -11,7 +13,7 @@ uniform sampler2D textureSampler;
 vec3 diffusePosition = vec3(0.0, 1.0, 0.0);
 vec3 ambientColor = vec3(1.0, 1.0, 1.0);
 //vec3 diffuseColor = vec3(1.0, 1.0, 1.0);
-float ambientEffect = 0.5;
+float ambientEffect = 0.4;
 
 
 out vec4 out_Color;
@@ -22,8 +24,9 @@ void main()
     vec3 normalizedNormal = normalize(pass_normals);
     float diffuseEffect = max(dot(normalizedNormal, diffuseDirection), 0.0);
     vec3 diffuse = diffuseEffect * diffuseColor;
+    diffuse = diffuse * pass_selectionEffect;
     vec3 ambient = ambientEffect * ambientColor;
     vec3 overall = ambient + diffuse;
-    out_Color = texture(textureSampler, pass_textureCoords) * vec4(overall, 1.0);
+    out_Color = texture(textureSampler, pass_textureCoords) * vec4(overall, pass_alpha);
 //    out_Color = vec4(1.0, 0.0, 0.0, 1.0);
 }

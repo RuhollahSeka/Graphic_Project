@@ -66,6 +66,12 @@ public class GLObject
         cube.setTransformationData(new TransformationData(pointOnAxis, rotationAxisType));
     }
 
+    public void setCubeGoal(String cubeName, Vector3f goal)
+    {
+        Cube cube = importantParts.get(cubeName);
+        cube.setGoal(goal);
+    }
+
     public Cube getPart(String partName)
     {
         return importantParts.get(partName);
@@ -74,6 +80,16 @@ public class GLObject
     public Matrix4f getTransformationMatrix()
     {
         return transformationData.getTransformationMatrix();
+    }
+
+    public void setRotationGoal(Vector3f goal)
+    {
+        transformationData.setGoal(goal);
+    }
+
+    public Vector3f getGoal()
+    {
+        return transformationData.getGoal();
     }
 
     public ArrayList<Cube> getCubicParts()

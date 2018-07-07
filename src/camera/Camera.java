@@ -1,5 +1,6 @@
 package camera;
 
+import movement.MovementHandler;
 import util.Matrix4f;
 import util.Vector3f;
 import util.Vector4f;
@@ -41,40 +42,22 @@ public class Camera
         this.jumping = false;
 
         this.mainY = position.y;
-
-        startUpdateThread();
     }
 
-    private void startUpdateThread()
-    {
-        new Thread(() ->
-        {
-            while (true)
-            {
-                update();
-                try
-                {
-                    Thread.sleep(10);
-                } catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    private void update()
+    public void update(MovementHandler movementHandler)
     {
         float effect = running ? 2.0f : 1.0f;
 
         Vector3f frontSpeedVector = front.scale(zSpeed * effect);
         frontSpeedVector.y = 0;
         position = position.add(frontSpeedVector);
+        movementHandler.handleCollisions(frontSpeedVector);
 
         Vector3f rightSpeedVector = front.cross(up);
         rightSpeedVector = rightSpeedVector.scale(xSpeed * effect);
         rightSpeedVector.y = 0;
         position = position.add(rightSpeedVector);
+        movementHandler.handleCollisions(rightSpeedVector);
 
         if (jumping)
         {
@@ -88,10 +71,13 @@ public class Camera
                 ySpeed = 0.0f;
                 yAcceleration = 0.0f;
             }
+            movementHandler.handleCollisions(ySpeed);
         }
 
         xSpeed += xAcceleration;
         zSpeed += zAcceleration;
+
+        movementHandler.afterEffects();
     }
 
     public void addSpeed(float dx, float dy, float dz)

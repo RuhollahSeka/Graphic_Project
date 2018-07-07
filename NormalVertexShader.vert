@@ -8,10 +8,14 @@ uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform vec3 diffuse;
+uniform float selectionEffect;
+uniform float alpha;
 
 out vec2 pass_textureCoords;
 out vec3 pass_normals;
 out vec3 pass_posAfterTransformation;
+out float pass_selectionEffect;
+out float pass_alpha;
 out vec3 diffuseColor;
 
 void main()
@@ -22,4 +26,6 @@ void main()
     gl_Position = projectionMatrix * viewMatrix * transformationMatrix * vec4(position, 1.0);
     pass_textureCoords = textureCoords;
     diffuseColor = diffuse;
+    pass_selectionEffect = selectionEffect;
+    pass_alpha = alpha;
 }

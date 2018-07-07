@@ -1,4 +1,5 @@
 import camera.Camera;
+import movement.MovementHandler;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
@@ -16,14 +17,16 @@ public class GLCallbackHandler // TODO events
     private GLFWKeyCallback keyCallback;
     private GLFWMouseButtonCallback mouseButtonCallback;
     private GLFWCursorPosCallback cursorPosCallback;
+    private MovementHandler movementHandler;
     private long window;
 
-    public GLCallbackHandler(Camera camera)
+    public GLCallbackHandler(Camera camera, MovementHandler movementHandler)
     {
         this.camera = camera;
         this.keyCallback = new MyKeyCallback();
         this.mouseButtonCallback = new MyMouseButtonCallback();
         this.cursorPosCallback = new MyCursorPosCallback();
+        this.movementHandler = movementHandler;
     }
 
     public void setWindow(long window)
@@ -116,16 +119,16 @@ public class GLCallbackHandler // TODO events
         {
             if (key == GLFW_KEY_W)
             {
-                camera.addSpeed(0, 0, -0.005f);
+                camera.addSpeed(0, 0, -0.002f);
             } else if (key == GLFW_KEY_S)
             {
-                camera.addSpeed(0, 0, 0.005f);
+                camera.addSpeed(0, 0, 0.002f);
             } else if (key == GLFW_KEY_A)
             {
-                camera.addSpeed(0.005f, 0, 0);
+                camera.addSpeed(0.002f, 0, 0);
             } else if (key == GLFW_KEY_D)
             {
-                camera.addSpeed(-0.005f, 0, 0);
+                camera.addSpeed(-0.002f, 0, 0);
             } else if (key == GLFW_KEY_LEFT_SHIFT)
             {
                 camera.setRunning(false);
@@ -136,30 +139,36 @@ public class GLCallbackHandler // TODO events
         {
             if (key == GLFW_KEY_W)
             {
-                camera.addSpeed(0, 0, 0.005f);
+                camera.addSpeed(0, 0, 0.002f);
             } else if (key == GLFW_KEY_S)
             {
-                camera.addSpeed(0, 0, -0.005f);
+                camera.addSpeed(0, 0, -0.002f);
             } else if (key == GLFW_KEY_A)
             {
-                camera.addSpeed(-0.005f, 0, 0);
+                camera.addSpeed(-0.002f, 0, 0);
             } else if (key == GLFW_KEY_D)
             {
-                camera.addSpeed(0.005f, 0, 0);
+                camera.addSpeed(0.002f, 0, 0);
             } else if (key == GLFW_KEY_E)
             {
-
+                movementHandler.open();
             } else if (key == GLFW_KEY_LEFT_SHIFT)
             {
                 camera.setRunning(true);
             } else if (key == GLFW_KEY_SPACE)
             {
-                camera.addSpeed(0.0f, -0.008f, 0.0f);
+                camera.addSpeed(0.0f, -0.012f, 0.0f);
                 camera.addAcceleration(0.0f, 0.0005f, 0.0f);
                 camera.setJumping(true);
             } else if (key == GLFW_KEY_ESCAPE)
             {
                 glfwSetWindowShouldClose(window, true);
+            } else if (key == GLFW_KEY_F)
+            {
+                movementHandler.increaseMinutes(1);
+            } else if (key == GLFW_KEY_H)
+            {
+                movementHandler.increaseHours(1);
             }
         }
     }

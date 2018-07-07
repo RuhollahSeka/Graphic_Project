@@ -10,6 +10,7 @@ public class TransformationData
 {
     private Vector3f translation;
     private Vector3f rotation;
+    private Vector3f goal;
     private float scale;
     private Vector3f distance;
     private RotationAxisType rotationAxisType;
@@ -18,9 +19,11 @@ public class TransformationData
     {
         this.translation = new Vector3f(0.0f, 0.0f, 0.0f);
         this.rotation = new Vector3f(0.0f, 0.0f, 0.0f);
+        this.goal = new Vector3f(0.0f, 0.0f, 0.0f);
         this.scale = 1.0f;
         this.rotationAxisType = rotationAxisType;
         calculateDistance(pointOnAxis);
+        startThread();
     }
 
     public TransformationData()
@@ -30,6 +33,40 @@ public class TransformationData
         this.scale = 1.0f;
         this.distance = new Vector3f(0.0f, 0.0f, 0.0f);
         this.rotationAxisType = RotationAxisType.NULL;
+    }
+
+    public void startThread()
+    {
+        new Thread(() ->
+        {
+            while (true)
+            {
+                float xOffset = (goal.x - rotation.x)/100;
+                float yOffset = (goal.y - rotation.y)/100;
+                float zOffset = (goal.z - rotation.z)/100;
+                if (Math.max(Math.max(xOffset, yOffset), zOffset) < 8.0f/100.0f &&
+                        Math.min(Math.min(xOffset, yOffset), zOffset) > -8.0f/100.f)
+                {
+                    rotation.x = goal.x;
+                    rotation.y = goal.y;
+                    rotation.z = goal.z;
+                } else
+                {
+                    rotation.x += (goal.x - rotation.x)/100;
+                    rotation.y += (goal.y - rotation.y)/100;
+                    rotation.z += (goal.z - rotation.z)/100;
+                }
+
+
+                try
+                {
+                    Thread.sleep(10);
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     private void calculateDistance(Vector3f pointOnAxis)
@@ -89,5 +126,15 @@ public class TransformationData
     public void setScale(float scale)
     {
         this.scale = scale;
+    }
+
+    public void setGoal(Vector3f goal)
+    {
+        this.goal = goal;
+    }
+
+    public Vector3f getGoal()
+    {
+        return goal;
     }
 }

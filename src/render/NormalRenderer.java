@@ -35,11 +35,13 @@ public class NormalRenderer
         shader.stop();
     }
 
-    public void render(GLObject object, Camera camera, Vector3f diffuseColor, int cubeNumber)
+    public void render(GLObject object, Camera camera, Vector3f diffuseColor, int cubeNumber, float selectionEffect, float alpha)
     {
         shader.start();
         shader.loadViewMatrix(camera);
         shader.loadDiffuseColor(diffuseColor);
+        shader.loadSelectionEffect(selectionEffect);
+        shader.loadAlpha(alpha);
         Matrix4f objectTransformation = object.getTransformationMatrix();
         ArrayList<Cube> cubes = object.getCubicParts();
 

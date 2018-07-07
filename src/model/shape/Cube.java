@@ -6,6 +6,7 @@ import texture.Texture;
 import util.Matrix4f;
 import util.Vector2f;
 import util.Vector3f;
+import util.Vector4f;
 
 import java.util.ArrayList;
 
@@ -22,6 +23,7 @@ public class Cube
     private DrawData drawData;
     private TransformationData transformationData;
 
+    private float minX, maxX, minY, maxY, minZ, maxZ;
     private Vector3f center;
     private float width;
     private float height;
@@ -80,12 +82,12 @@ public class Cube
 
     private void addPoints()
     {
-        float minX = center.x - (width / 2.0f);
-        float maxX = center.x + (width / 2.0f);
-        float minY = center.y - (height / 2.0f);
-        float maxY = center.y + (height / 2.0f);
-        float minZ = center.z - (depth / 2.0f);
-        float maxZ = center.z + (depth / 2.0f);
+        minX = center.x - (width / 2.0f);
+        maxX = center.x + (width / 2.0f);
+        minY = center.y - (height / 2.0f);
+        maxY = center.y + (height / 2.0f);
+        minZ = center.z - (depth / 2.0f);
+        maxZ = center.z + (depth / 2.0f);
 
         // front
         points.add(new Vector3f(minX, maxY, maxZ));
@@ -208,6 +210,18 @@ public class Cube
         return normal;
     }
 
+    public float getDistance(Vector3f point, Matrix4f objectTransformationMatrix)
+    {
+        Vector4f minimums = objectTransformationMatrix.multiply(getTransformationMatrix().multiply(new Vector4f(minX, minY, minZ, 1.0f)));
+        Vector4f maximums = objectTransformationMatrix.multiply(getTransformationMatrix().multiply(new Vector4f(maxX, maxY, maxZ, 1.0f)));
+
+        float dx = Math.max(Math.max(minimums.x - point.x, 0.0f), point.x - maximums.x);
+        float dy = Math.max(Math.max(minimums.y - point.y, 0.0f), point.y - maximums.y);
+        float dz = Math.max(Math.max(minimums.z - point.z, 0.0f), point.z - maximums.z);
+
+        return (float) Math.sqrt(dx*dx + dy*dy + dz*dz);
+    }
+
     public Matrix4f getTransformationMatrix()
     {
         return transformationData.getTransformationMatrix();
@@ -216,6 +230,12 @@ public class Cube
     public void setTransformationData(TransformationData transformationData)
     {
         this.transformationData = transformationData;
+        this.transformationData.startThread();
+    }
+
+    public void setGoal(Vector3f goal)
+    {
+        this.transformationData.setGoal(goal);
     }
 
     public ArrayList<Vector3f> getPoints()

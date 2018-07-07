@@ -1,8 +1,10 @@
 import camera.Camera;
 import model.GLObject;
+import model.RotationAxisType;
 import model.Visibility;
 import model.shape.Cube;
 import model.shape.DrawData;
+import movement.MovementHandler;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.*;
@@ -41,6 +43,7 @@ public class MainGL
     private int windowWidth;
     private int windowHeight;
     private GLCallbackHandler callbackHandler;
+    private MovementHandler movementHandler;
 
     private static final float FOV = 70.0f;
     private static final float NEAR_PLANE = 0.01f;
@@ -61,7 +64,8 @@ public class MainGL
         this.objectsMap = new HashMap<>();
         this.diffuseColor = new Vector3f(1.0f, 1.0f, 1.0f);
         this.camera = new Camera(new Vector3f(0.0f, 8.5f / 25.0f, 8.0f / 25.0f));
-        this.callbackHandler = new GLCallbackHandler(camera);
+        this.movementHandler = new MovementHandler(camera, objectsMap);
+        this.callbackHandler = new GLCallbackHandler(camera, movementHandler);
         this.windowWidth = 1200;
         this.windowHeight = 800;
     }
@@ -140,9 +144,49 @@ public class MainGL
         createProjectionMatrix();
         addObjects();
         addCallbacks();
+        movementHandler.startThread();
         createVao();
         setVao();
         createRenderers();
+        startLightingThread();
+    }
+
+    private void startLightingThread()
+    {
+        new Thread(() ->
+        {
+            Vector3f goodLight = new Vector3f(1.0f, 1.0f, 1.0f);
+            Vector3f mediumLight = new Vector3f(0.5f, 0.5f, 0.5f);
+            Vector3f zeroLight = new Vector3f(0.0f, 0.0f, 0.0f);
+
+            while (true)
+            {
+                try
+                {
+                    diffuseColor = goodLight;
+                    Thread.sleep(5000);
+                    diffuseColor = mediumLight;
+                    Thread.sleep(50);
+                    diffuseColor = goodLight;
+                    Thread.sleep(50);
+                    diffuseColor = mediumLight;
+                    Thread.sleep(50);
+                    diffuseColor = goodLight;
+                    Thread.sleep(50);
+                    diffuseColor = mediumLight;
+                    Thread.sleep(50);
+                    diffuseColor = goodLight;
+                    Thread.sleep(50);
+                    diffuseColor = mediumLight;
+                    Thread.sleep(50);
+                    diffuseColor = zeroLight;
+                    Thread.sleep(5000);
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     private void createRenderers() throws FileNotFoundException
@@ -331,16 +375,16 @@ public class MainGL
         objects.add(table);
 //
         //Window
-        GLObject window =new GLObject();
+        GLObject window = new GLObject(new Vector3f(-10f / 25.0f, 6f / 25.0f, 3.5f / 25.0f), RotationAxisType.ParallelY);
         window.addCube(new Vector3f(-10f / 25.0f, 6f / 25.0f, 1f / 25.0f), 1f / 25.0f, 5f / 25.0f, 5f / 25.0f,
                 Visibility.VisibleOutside, "textures\\glassTile.png", 5f / 25.0f, 5f / 25.0f);
         objectsMap.put("Window", window);
         objects.add(window);
 //
 //        //Door
-        GLObject door = new GLObject();
+        GLObject door = new GLObject(new Vector3f(-2.5f / 25.0f, 10f / 25.0f, -9f / 25.0f), RotationAxisType.ParallelY);
         door.addCube(new Vector3f(0f / 25.0f, 10f / 25.0f, -9f / 25.0f), 5f / 25.0f, 10f / 25.0f, 1f / 25.0f,
-                Visibility.VisibleOutside, "textures\\tableTile.jpg", 5f / 25.0f, 5f / 25.0f);
+                Visibility.VisibleOutside, "textures\\tableTile.jpg", "Door", 5f / 25.0f, 5f / 25.0f);
         door.addCube(new Vector3f(2f / 25.0f, 10f / 25.0f, -8.25f / 25.0f), 0.5f / 25.0f, 0.5f / 25.0f, 0.5f / 25.0f,
                 Visibility.VisibleOutside, "textures\\knobTile.jpg", "Major Knob",5f / 25.0f, 5f / 25.0f);
         door.addCube(new Vector3f(1.5f / 25.0f, 10f / 25.0f, -8.25f / 25.0f), 0.5f / 25.0f, 0.25f / 25.0f, 0.25f / 25.0f,
@@ -357,6 +401,8 @@ public class MainGL
                 Visibility.VisibleOutside, "textures\\knobTile.jpg", "Minute bar", 2f, 2f);
         clock.addCube(new Vector3f(9.3f / 25.0f, 4f / 25.0f, 1.35f / 25.0f), 0.2f / 25.0f, 0.1f / 25.0f, 0.7f / 25.0f,
                 Visibility.VisibleOutside, "textures\\knobTile.jpg", "Hour bar", 2f, 2f);
+        clock.setCubeTransformationData("Minute bar", new Vector3f(9.6f / 25.0f, 4f / 25.0f, 1f / 25.0f), RotationAxisType.ParallelX);
+        clock.setCubeTransformationData("Hour bar", new Vector3f(9.6f / 25.0f, 4f / 25.0f, 1f / 25.0f), RotationAxisType.ParallelX);
         objectsMap.put("Clock", clock);
         objects.add(clock);
 //
@@ -373,6 +419,13 @@ public class MainGL
         // Set the clear color
         glClearColor(0.4f, 0.7f, 1.0f, 1.0f);
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        GLObject door = objectsMap.get("Door");
+        GLObject windowObj = objectsMap.get("Window");
+
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while ( !glfwWindowShouldClose(window) ) {
@@ -385,10 +438,21 @@ public class MainGL
 //            }
             int cubeCounter = 0;
 
-            for (int i = 0; i < objects.size(); i++)
+            for (GLObject object : objects)
             {
-                GLObject object = objects.get(i);
-                normalRenderer.render(object, camera, diffuseColor, cubeCounter);
+                float selectionEffect = 1.0f;
+                float alpha = 1.0f;
+
+                if ((object == door && movementHandler.isDoorSelected()) || (object == windowObj && movementHandler.isWindowSelected()))
+                {
+                    selectionEffect = 0.5f;
+                }
+                if (object == windowObj)
+                {
+                    alpha = 0.5f;
+                }
+
+                normalRenderer.render(object, camera, diffuseColor, cubeCounter, selectionEffect, alpha);
                 cubeCounter += object.getCubicParts().size();
             }
 
