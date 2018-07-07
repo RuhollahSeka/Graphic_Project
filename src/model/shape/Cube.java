@@ -140,7 +140,7 @@ public class Cube
 
     private void addTextureCoordinates()
     {
-        for (int i = 0; i < 6; i++)
+        for (int i = 1; i <= 6; i++)
         {
             textureCoordinates.add(new Vector2f(0.0f, 0.0f));
             textureCoordinates.add(new Vector2f((float) i * 1.0f / 6.0f, 0.0f));
@@ -158,37 +158,37 @@ public class Cube
         textureCoordinates.add(new Vector2f(0.0f, 0.0f));
         textureCoordinates.add(new Vector2f( width / texX, 0.0f));
         textureCoordinates.add(new Vector2f(0.0f, height / texY));
-        textureCoordinates.add(new Vector2f(width / texX / 6.0f, height / texY));
+        textureCoordinates.add(new Vector2f(width / texX, height / texY));
 
         //back
         textureCoordinates.add(new Vector2f(0.0f, 0.0f));
         textureCoordinates.add(new Vector2f( width / texX, 0.0f));
         textureCoordinates.add(new Vector2f(0.0f, height / texY));
-        textureCoordinates.add(new Vector2f(width / texX / 6.0f, height / texY));
+        textureCoordinates.add(new Vector2f(width / texX, height / texY));
 
         //right
         textureCoordinates.add(new Vector2f(0.0f, 0.0f));
         textureCoordinates.add(new Vector2f( depth / texX, 0.0f));
         textureCoordinates.add(new Vector2f(0.0f, height / texY));
-        textureCoordinates.add(new Vector2f(depth / texX / 6.0f, height / texY));
+        textureCoordinates.add(new Vector2f(depth / texX, height / texY));
 
         //left
         textureCoordinates.add(new Vector2f(0.0f, 0.0f));
         textureCoordinates.add(new Vector2f( depth / texX, 0.0f));
         textureCoordinates.add(new Vector2f(0.0f, height / texY));
-        textureCoordinates.add(new Vector2f(depth / texX / 6.0f, height / texY));
+        textureCoordinates.add(new Vector2f(depth / texX, height / texY));
 
         //top
         textureCoordinates.add(new Vector2f(0.0f, 0.0f));
         textureCoordinates.add(new Vector2f( width / texX, 0.0f));
         textureCoordinates.add(new Vector2f(0.0f, depth / texY));
-        textureCoordinates.add(new Vector2f(width / texX / 6.0f, depth / texY));
+        textureCoordinates.add(new Vector2f(width / texX, depth / texY));
 
         //bottom
         textureCoordinates.add(new Vector2f(0.0f, 0.0f));
         textureCoordinates.add(new Vector2f( width / texX, 0.0f));
         textureCoordinates.add(new Vector2f(0.0f, depth / texY));
-        textureCoordinates.add(new Vector2f(width / texX / 6.0f, depth / texY));
+        textureCoordinates.add(new Vector2f(width / texX, depth / texY));
     }
 
     private Vector3f getNormal(int startPointIndex)

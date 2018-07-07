@@ -11,7 +11,7 @@ uniform sampler2D textureSampler;
 vec3 diffusePosition = vec3(0.0, 1.0, 0.0);
 vec3 ambientColor = vec3(1.0, 1.0, 1.0);
 //vec3 diffuseColor = vec3(1.0, 1.0, 1.0);
-float ambientEffect = 0.1;
+float ambientEffect = 0.5;
 
 
 out vec4 out_Color;

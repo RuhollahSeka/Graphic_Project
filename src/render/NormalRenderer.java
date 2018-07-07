@@ -35,7 +35,7 @@ public class NormalRenderer
         shader.stop();
     }
 
-    public void render(GLObject object, Camera camera, Vector3f diffuseColor)
+    public void render(GLObject object, Camera camera, Vector3f diffuseColor, int cubeNumber)
     {
         shader.start();
         shader.loadViewMatrix(camera);
@@ -46,7 +46,7 @@ public class NormalRenderer
         for (int i = 0; i < cubes.size(); i++)
         {
             Cube cube = cubes.get(i);
-            renderCube(cube, i, objectTransformation);
+            renderCube(cube, i + cubeNumber, objectTransformation);
         }
 
         shader.stop();

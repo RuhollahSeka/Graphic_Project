@@ -113,12 +113,12 @@ public class Camera
         pitch += dPitch;
         yaw += dYaw;
 
-        if (pitch > 89.0f)
+        if (pitch > 50.0f)
         {
-            pitch = 89.0f;
-        } else if (pitch < -89.0f)
+            pitch = 50.0f;
+        } else if (pitch < -50.0f)
         {
-            pitch = -89.0f;
+            pitch = -50.0f;
         }
     }
 

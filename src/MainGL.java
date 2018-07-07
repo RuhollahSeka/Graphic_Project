@@ -60,7 +60,7 @@ public class MainGL
         this.objects = new ArrayList<>();
         this.objectsMap = new HashMap<>();
         this.diffuseColor = new Vector3f(1.0f, 1.0f, 1.0f);
-        this.camera = new Camera(new Vector3f(0.0f, 0.0f, 0.0f));
+        this.camera = new Camera(new Vector3f(0.0f, 8.5f / 25.0f, 8.0f / 25.0f));
         this.callbackHandler = new GLCallbackHandler(camera);
         this.windowWidth = 1200;
         this.windowHeight = 800;
@@ -78,6 +78,7 @@ public class MainGL
         // Terminate GLFW and free the error callback
         glfwTerminate();
         glfwSetErrorCallback(null).free();
+        System.exit(0);
     }
 
     private void init() throws FileNotFoundException
@@ -135,6 +136,7 @@ public class MainGL
 
         GL.createCapabilities();
 
+        callbackHandler.setWindow(window);
         createProjectionMatrix();
         addObjects();
         addCallbacks();
@@ -268,79 +270,102 @@ public class MainGL
 
     private void addObjects()
     {
-        //Front Wall
+//        Front Wall
         GLObject frontWall = new GLObject();
-        frontWall.addCube(new Vector3f(0f, 7.5f, 11.0f), 20f, 15f, 1f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
+        frontWall.addCube(new Vector3f(0f / 25.0f, 7.5f / 25.0f, 11.0f / 25.0f), 20f / 25.0f,
+                15f / 25.0f, 1f / 25.0f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f / 25.0f, 5f / 25.0f);
         objectsMap.put("Front Wall", frontWall);
         objects.add(frontWall);
 
         //Left Wall
         GLObject leftWall = new GLObject();
-        leftWall.addCube(new Vector3f(-10f, 7.5f, 1f), 1f, 15f, 20f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
+        leftWall.addCube(new Vector3f(10f / 25.0f, 7.5f / 25.0f, 1f / 25.0f), 1f / 25.0f, 15f / 25.0f,
+                20f / 25.0f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f / 25.0f, 5f / 25.0f);
         objectsMap.put("Left Wall", leftWall);
         objects.add(leftWall);
 
         //Right Wall
         GLObject rightWall = new GLObject();
-        rightWall.addCube(new Vector3f(-10f, 3.25f, 1f), 1f, 6.5f, 20f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
-        rightWall.addCube(new Vector3f(-10f, 13.25f, 1f), 1f, 3.5f, 20f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
-        rightWall.addCube(new Vector3f(-10f, 7.5f, -5.25f), 1, 5f, 7.5f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
-        rightWall.addCube(new Vector3f(-10f, 7.5f, -0.5f), 0.5f, 0.5f, 0.5f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
+        rightWall.addCube(new Vector3f(-10f / 25.0f, 1.75f / 25.0f, 1f / 25.0f), 1f / 25.0f, 3.5f / 25.0f, 20f / 25.0f,
+                Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f / 25.0f, 5f / 25.0f);
+        rightWall.addCube(new Vector3f(-10f / 25.0f, 11.75f / 25.0f, 1f / 25.0f), 1f / 25.0f, 6.5f / 25.0f, 20f / 25.0f,
+                Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f / 25.0f, 5f / 25.0f);
+        rightWall.addCube(new Vector3f(-10f / 25.0f, 6.0f / 25.0f, -5.25f / 25.0f), 1 / 25.0f, 5f / 25.0f, 7.5f / 25.0f,
+                Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f / 25.0f, 5f / 25.0f);
+        rightWall.addCube(new Vector3f(-10f / 25.0f, 6.0f / 25.0f, 7.25f / 25.0f), 1.0f / 25.0f, 5.0f / 25.0f, 7.5f / 25.0f,
+                Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f / 25.0f, 5f / 25.0f);
         objectsMap.put("Right Wall", rightWall);
         objects.add(rightWall);
-
+//
         //Back Wall
         GLObject backWall = new GLObject();
-        backWall.addCube(new Vector3f(0f, 12.5f, -9f), 20f, 5f, 1f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
-        backWall.addCube(new Vector3f(-6.25f, 7.5f, -9f), 7.5f, 10f, 1f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
-        backWall.addCube(new Vector3f(6.25f, 7.5f, -9f), 7.5f, 10f, 1f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
+        backWall.addCube(new Vector3f(0f / 25.0f, 2.5f / 25.0f, -9f / 25.0f), 20f / 25.0f, 5f / 25.0f, 1f / 25.0f,
+                Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f / 25.0f, 5f / 25.0f);
+        backWall.addCube(new Vector3f(-6.25f / 25.0f, 10.0f / 25.0f, -9f / 25.0f), 7.5f / 25.0f, 10f / 25.0f, 1f / 25.0f,
+                Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f / 25.0f, 5f / 25.0f);
+        backWall.addCube(new Vector3f(6.25f / 25.0f, 10.0f / 25.0f, -9f / 25.0f), 7.5f / 25.0f, 10f / 25.0f, 1f / 25.0f,
+                Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f / 25.0f, 5f / 25.0f);
         objectsMap.put("Back Wall", backWall);
         objects.add(backWall);
-
+//
         //Roof
         GLObject roof = new GLObject();
-        roof.addCube(new Vector3f(0f, 15f, 1f), 20f, 1f, 20f, Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f, 5f);
+        roof.addCube(new Vector3f(0f / 25.0f, 0f / 25.0f, 1f / 25.0f), 20f / 25.0f, 1f / 25.0f, 20f / 25.0f,
+                Visibility.VisibleOutside, "textures\\wallTile.jpg", 5f / 25.0f, 5f / 25.0f);
         objectsMap.put("Roof", roof);
         objects.add(roof);
 
-        //Table
+//        //Table
         GLObject table = new GLObject();
-        table.addCube(new Vector3f(-1f, 3f, 0f), 6f, 0.5f, 4f, Visibility.VisibleOutside, "textures\\tableTile.jpg", 5f, 5f);
-        table.addCube(new Vector3f(-3.3f, 1.5f, 1.3f), 0.5f, 3f, 0.5f, Visibility.VisibleOutside, "textures\\tableTile.jpg", 5f, 5f);
-        table.addCube(new Vector3f(1.3f, 1.5f, 1.3f), 0.5f, 3f, 0.5f, Visibility.VisibleOutside, "textures\\tableTile.jpg", 5f, 5f);
-        table.addCube(new Vector3f(-3.3f, 1.5f, -1.3f), 0.5f, 3f, 0.5f, Visibility.VisibleOutside, "textures\\tableTile.jpg", 5f, 5f);
-        table.addCube(new Vector3f(1.3f, 1.5f, -1.3f), 0.5f, 3f, 0.5f, Visibility.VisibleOutside, "textures\\tableTile.jpg", 5f, 5f);
+        table.addCube(new Vector3f(-1f / 25.0f, 12f / 25.0f, 0f / 25.0f), 6f / 25.0f, 0.5f / 25.0f, 4f / 25.0f,
+                Visibility.VisibleOutside, "textures\\tableTile.jpg", 5f / 25.0f, 5f / 25.0f);
+        table.addCube(new Vector3f(-3.3f / 25.0f, 13.5f / 25.0f, 1.3f / 25.0f), 0.5f / 25.0f, 3f / 25.0f, 0.5f / 25.0f,
+                Visibility.VisibleOutside, "textures\\tableTile.jpg", 5f / 25.0f, 5f / 25.0f);
+        table.addCube(new Vector3f(1.3f / 25.0f, 13.5f / 25.0f, 1.3f / 25.0f), 0.5f / 25.0f, 3f / 25.0f, 0.5f / 25.0f,
+                Visibility.VisibleOutside, "textures\\tableTile.jpg", 5f / 25.0f, 5f / 25.0f);
+        table.addCube(new Vector3f(-3.3f / 25.0f, 13.5f / 25.0f, -1.3f / 25.0f), 0.5f / 25.0f, 3f / 25.0f, 0.5f / 25.0f,
+                Visibility.VisibleOutside, "textures\\tableTile.jpg", 5f / 25.0f, 5f / 25.0f);
+        table.addCube(new Vector3f(1.3f / 25.0f, 13.5f / 25.0f, -1.3f / 25.0f), 0.5f / 25.0f, 3f / 25.0f, 0.5f / 25.0f,
+                Visibility.VisibleOutside, "textures\\tableTile.jpg", 5f / 25.0f, 5f / 25.0f);
         objectsMap.put("Table", table);
         objects.add(table);
-
+//
         //Window
         GLObject window =new GLObject();
-        window.addCube(new Vector3f(-10f, 9f, 1f), 1f, 5f, 5f, Visibility.VisibleOutside, "textures\\glassTile.jpg", 5f, 5f);
+        window.addCube(new Vector3f(-10f / 25.0f, 6f / 25.0f, 1f / 25.0f), 1f / 25.0f, 5f / 25.0f, 5f / 25.0f,
+                Visibility.VisibleOutside, "textures\\glassTile.png", 5f / 25.0f, 5f / 25.0f);
         objectsMap.put("Window", window);
         objects.add(window);
-
-        //Door
+//
+//        //Door
         GLObject door = new GLObject();
-        door.addCube(new Vector3f(0f, 5f, -9f), 5f, 10f, 1f, Visibility.VisibleOutside, "textures\\tableTile.jpg", 5f, 5f);
-        door.addCube(new Vector3f(2f, 5f, -8.25f), 0.5f, 0.5f, 0.5f, Visibility.VisibleOutside, "textures\\knobTile.jpg", "Major Knob",5f, 5f);
-        door.addCube(new Vector3f(1.5f, 5f, -8.25f), 0.5f, 0.25f, 0.25f, Visibility.VisibleOutside, "textures\\knobTile.jpg", "Minor Knob",5f, 5f);
+        door.addCube(new Vector3f(0f / 25.0f, 10f / 25.0f, -9f / 25.0f), 5f / 25.0f, 10f / 25.0f, 1f / 25.0f,
+                Visibility.VisibleOutside, "textures\\tableTile.jpg", 5f / 25.0f, 5f / 25.0f);
+        door.addCube(new Vector3f(2f / 25.0f, 10f / 25.0f, -8.25f / 25.0f), 0.5f / 25.0f, 0.5f / 25.0f, 0.5f / 25.0f,
+                Visibility.VisibleOutside, "textures\\knobTile.jpg", "Major Knob",5f / 25.0f, 5f / 25.0f);
+        door.addCube(new Vector3f(1.5f / 25.0f, 10f / 25.0f, -8.25f / 25.0f), 0.5f / 25.0f, 0.25f / 25.0f, 0.25f / 25.0f,
+                Visibility.VisibleOutside, "textures\\knobTile.jpg", "Minor Knob",5f / 25.0f, 5f / 25.0f);
         objectsMap.put("Door", door);
         objects.add(door);
-
-
-        //Clock
+//
+//
+//        //Clock
         GLObject clock = new GLObject();
-        clock.addCube(new Vector3f(9.4f, 11f, 1f), 0.2f, 2f, 2f, Visibility.VisibleOutside, "textures\\clock.jpg");
-        clock.addCube(new Vector3f(9.3f, 11.45f, 1f), 0.2f, 0.9f, 0.1f, Visibility.VisibleOutside, "textures\\knobTile.jpg", "Minute bar", 2f, 2f);
-        clock.addCube(new Vector3f(9.3f, 11f, 1.35f), 0.2f, 0.1f, 0.7f, Visibility.VisibleOutside, "textures\\knobTile.jpg", "Hour bar", 2f, 2f);
+        clock.addCube(new Vector3f(9.4f / 25.0f, 4f / 25.0f, 1f / 25.0f), 0.2f / 25.0f, 2f / 25.0f, 2f / 25.0f,
+                Visibility.VisibleOutside, "textures\\clock.jpg");
+        clock.addCube(new Vector3f(9.3f / 25.0f, 3.55f / 25.0f, 1f / 25.0f), 0.2f / 25.0f, 0.9f / 25.0f, 0.1f / 25.0f,
+                Visibility.VisibleOutside, "textures\\knobTile.jpg", "Minute bar", 2f, 2f);
+        clock.addCube(new Vector3f(9.3f / 25.0f, 4f / 25.0f, 1.35f / 25.0f), 0.2f / 25.0f, 0.1f / 25.0f, 0.7f / 25.0f,
+                Visibility.VisibleOutside, "textures\\knobTile.jpg", "Hour bar", 2f, 2f);
         objectsMap.put("Clock", clock);
         objects.add(clock);
-
-        //Skybox
-        GLObject skybox = new GLObject();
-        skybox.addCube(new Vector3f(1000f, 1000f, 1000f), 0f, 500f, 0f, Visibility.VisibleInside, "textures\\sky.jpg");
-        objectsMap.put("Skybox", skybox);
-        objects.add(skybox);
+//
+//        //Skybox
+//        GLObject skybox = new GLObject();
+//        skybox.addCube(new Vector3f(25.0f / 25.0f, -10.5f / 25.0f, 25.0f / 25.0f), 0f / 25.0f, 12.5f / 25.0f, 0f / 25.0f,
+//                Visibility.VisibleInside, "textures\\sky.jpg");
+//        objectsMap.put("Skybox", skybox);
+//        objects.add(skybox);
 
     }
 
@@ -354,9 +379,17 @@ public class MainGL
             glEnable(GL_DEPTH_TEST);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-            for (GLObject object : objects)
+//            for (GLObject object : objects)
+//            {
+//                normalRenderer.render(object, camera, diffuseColor);
+//            }
+            int cubeCounter = 0;
+
+            for (int i = 0; i < objects.size(); i++)
             {
-                normalRenderer.render(object, camera, diffuseColor);
+                GLObject object = objects.get(i);
+                normalRenderer.render(object, camera, diffuseColor, cubeCounter);
+                cubeCounter += object.getCubicParts().size();
             }
 
             // Poll for window events. The key callback above will only be

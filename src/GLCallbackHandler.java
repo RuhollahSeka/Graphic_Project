@@ -16,6 +16,7 @@ public class GLCallbackHandler // TODO events
     private GLFWKeyCallback keyCallback;
     private GLFWMouseButtonCallback mouseButtonCallback;
     private GLFWCursorPosCallback cursorPosCallback;
+    private long window;
 
     public GLCallbackHandler(Camera camera)
     {
@@ -23,6 +24,11 @@ public class GLCallbackHandler // TODO events
         this.keyCallback = new MyKeyCallback();
         this.mouseButtonCallback = new MyMouseButtonCallback();
         this.cursorPosCallback = new MyCursorPosCallback();
+    }
+
+    public void setWindow(long window)
+    {
+        this.window = window;
     }
 
     public GLFWKeyCallback getKeyCallback()
@@ -110,16 +116,16 @@ public class GLCallbackHandler // TODO events
         {
             if (key == GLFW_KEY_W)
             {
-                camera.addSpeed(0, 0, -0.01f);
+                camera.addSpeed(0, 0, -0.005f);
             } else if (key == GLFW_KEY_S)
             {
-                camera.addSpeed(0, 0, 0.01f);
+                camera.addSpeed(0, 0, 0.005f);
             } else if (key == GLFW_KEY_A)
             {
-                camera.addSpeed(0.01f, 0, 0);
+                camera.addSpeed(0.005f, 0, 0);
             } else if (key == GLFW_KEY_D)
             {
-                camera.addSpeed(-0.01f, 0, 0);
+                camera.addSpeed(-0.005f, 0, 0);
             } else if (key == GLFW_KEY_LEFT_SHIFT)
             {
                 camera.setRunning(false);
@@ -130,16 +136,16 @@ public class GLCallbackHandler // TODO events
         {
             if (key == GLFW_KEY_W)
             {
-                camera.addSpeed(0, 0, 0.01f);
+                camera.addSpeed(0, 0, 0.005f);
             } else if (key == GLFW_KEY_S)
             {
-                camera.addSpeed(0, 0, -0.01f);
+                camera.addSpeed(0, 0, -0.005f);
             } else if (key == GLFW_KEY_A)
             {
-                camera.addSpeed(-0.01f, 0, 0);
+                camera.addSpeed(-0.005f, 0, 0);
             } else if (key == GLFW_KEY_D)
             {
-                camera.addSpeed(0.01f, 0, 0);
+                camera.addSpeed(0.005f, 0, 0);
             } else if (key == GLFW_KEY_E)
             {
 
@@ -148,9 +154,12 @@ public class GLCallbackHandler // TODO events
                 camera.setRunning(true);
             } else if (key == GLFW_KEY_SPACE)
             {
-                camera.addSpeed(0.0f, -0.05f, 0.0f);
-                camera.addAcceleration(0.0f, 0.003f, 0.0f);
+                camera.addSpeed(0.0f, -0.008f, 0.0f);
+                camera.addAcceleration(0.0f, 0.0005f, 0.0f);
                 camera.setJumping(true);
+            } else if (key == GLFW_KEY_ESCAPE)
+            {
+                glfwSetWindowShouldClose(window, true);
             }
         }
     }
