@@ -222,6 +222,15 @@ public class Cube
         return (float) Math.sqrt(dx*dx + dy*dy + dz*dz);
     }
 
+    public float getDistance(Vector3f point)
+    {
+        float dx = Math.max(Math.max(minX - point.x, 0.0f), point.x - maxX);
+        float dy = Math.max(Math.max(minY - point.y, 0.0f), point.y - maxY);
+        float dz = Math.max(Math.max(minZ - point.z, 0.0f), point.z - maxZ);
+
+        return (float) Math.sqrt(dx*dx + dy*dy + dz*dz);
+    }
+
     public Matrix4f getTransformationMatrix()
     {
         return transformationData.getTransformationMatrix();
@@ -231,6 +240,23 @@ public class Cube
     {
         this.transformationData = transformationData;
         this.transformationData.startThread();
+    }
+
+
+
+    public void setScale(float scale)
+    {
+        transformationData.setScale(scale);
+    }
+
+    public void setRotation(float angle)
+    {
+        transformationData.setRotation(angle);
+    }
+
+    public void translate(Vector3f change)
+    {
+        transformationData.translate(change.x, change.y, change.z);
     }
 
     public void setGoal(Vector3f goal)
@@ -261,5 +287,25 @@ public class Cube
     public Texture getTexture()
     {
         return texture;
+    }
+
+    public Vector3f getCenter()
+    {
+        return center;
+    }
+
+    public float getWidth()
+    {
+        return width;
+    }
+
+    public float getHeight()
+    {
+        return height;
+    }
+
+    public float getDepth()
+    {
+        return depth;
     }
 }

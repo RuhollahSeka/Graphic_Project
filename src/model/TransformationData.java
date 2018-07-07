@@ -123,6 +123,25 @@ public class TransformationData
         rotation.z += dz;
     }
 
+    public void setRotation(float angle)
+    {
+        switch (rotationAxisType)
+        {
+            case ParallelX:
+                rotation.x = angle;
+                goal.x = angle;
+                break;
+            case ParallelY:
+                rotation.y = angle;
+                goal.y = angle;
+                break;
+            case ParallelZ:
+                rotation.z = angle;
+                goal.z = angle;
+                break;
+        }
+    }
+
     public void setScale(float scale)
     {
         this.scale = scale;

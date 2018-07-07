@@ -1,7 +1,5 @@
 import camera.Camera;
-import model.GLObject;
-import model.RotationAxisType;
-import model.Visibility;
+import model.*;
 import model.shape.Cube;
 import model.shape.DrawData;
 import movement.MovementHandler;
@@ -54,17 +52,26 @@ public class MainGL
 
     private HashMap<String, GLObject> objectsMap;
     private ArrayList<GLObject> objects;
+    private ArrayList<Tree> trees;
+    private ArrayList<Grass> grasses;
     private NormalRenderer normalRenderer;
+    private ParticleMaster particleMaster;
+
+    private int startPositionIndexForGrassCubes;
+    private int startNormalIndexForGrassCubes;
+    private int startTextureIndexForGrassCubes;
 
     public MainGL()
     {
         this.vaos = new ArrayList<>();
         this.vbos = new ArrayList<>();
         this.objects = new ArrayList<>();
+        this.trees = new ArrayList<>();
+        this.grasses = new ArrayList<>();
         this.objectsMap = new HashMap<>();
         this.diffuseColor = new Vector3f(1.0f, 1.0f, 1.0f);
         this.camera = new Camera(new Vector3f(0.0f, 8.5f / 25.0f, 8.0f / 25.0f));
-        this.movementHandler = new MovementHandler(camera, objectsMap);
+        this.movementHandler = new MovementHandler(camera, objectsMap, trees);
         this.callbackHandler = new GLCallbackHandler(camera, movementHandler);
         this.windowWidth = 1200;
         this.windowHeight = 800;
@@ -143,12 +150,40 @@ public class MainGL
         callbackHandler.setWindow(window);
         createProjectionMatrix();
         addObjects();
+        addTrees();
+//        addGrasses();
         addCallbacks();
         movementHandler.startThread();
         createVao();
         setVao();
         createRenderers();
         startLightingThread();
+    }
+
+    private void addGrasses()
+    {
+        Grass firstGrass = new Grass(new Vector3f(0.0f, 15.2f / 25.0f, -16.0f / 25.0f), new Vector3f(0.0f, 0.5f, 0.0f));
+        grasses.add(firstGrass);
+
+        particleMaster = new ParticleMaster(grasses);
+    }
+
+    private void addTrees()
+    {
+        Cube firstTreeBody = new Cube(new Vector3f(0.0f, 10.6f / 25.0f, -30.0f / 25.0f), 1.0f / 25.0f, 10.f / 25.0f, 1.0f / 25.0f,
+                Visibility.VisibleOutside, "textures\\knobTile.jpg");
+        Tree firstTree = new Tree(firstTreeBody, 4, 1);
+        trees.add(firstTree);
+
+        Cube secondTreeBody = new Cube(new Vector3f(0.0f / 25.0f, 10.6f / 25.0f, 30.0f / 25.0f), 1.0f / 25.0f, 10.f / 25.0f, 1.0f / 25.0f,
+                Visibility.VisibleOutside, "textures\\knobTile.jpg");
+        Tree secondTree = new Tree(secondTreeBody, 3, 1);
+        trees.add(secondTree);
+
+        Cube threeTreeBody = new Cube(new Vector3f(25.0f / 25.0f, 10.6f / 25.0f, -30.0f / 25.0f), 1.0f / 25.0f, 10.f / 25.0f, 1.0f / 25.0f,
+                Visibility.VisibleOutside, "textures\\knobTile.jpg");
+        Tree threeTree = new Tree(threeTreeBody, 3, 1);
+        trees.add(threeTree);
     }
 
     private void startLightingThread()
@@ -203,9 +238,9 @@ public class MainGL
         ArrayList<Float[]> normals = collectNormals(drawData);
         ArrayList<Float[]> textureCoordinates = collectTextureCoordinates(drawData);
 
-        setVaoIndex(positions, 0, 3);
-        setVaoIndex(textureCoordinates, 1, 2);
-        setVaoIndex(normals, 2, 3);
+        startPositionIndexForGrassCubes = setVaoIndex(positions, 0, 3);
+        startTextureIndexForGrassCubes = setVaoIndex(textureCoordinates, 1, 2);
+        startNormalIndexForGrassCubes = setVaoIndex(normals, 2, 3);
     }
 
     private ArrayList<Float[]> collectTextureCoordinates(ArrayList<DrawData> drawData)
@@ -257,10 +292,74 @@ public class MainGL
             }
         }
 
+        for (Tree tree : trees)
+        {
+            ArrayList<Cube> cubes = tree.getCubes();
+            for (Cube cube : cubes)
+            {
+                drawData.add(cube.getDrawData());
+            }
+        }
+
         return drawData;
     }
 
-    private void setVaoIndex(ArrayList<Float[]> list, int index, int size)
+    private int setVaoIndex(ArrayList<Float[]> list, int index, int size)
+    {
+        int vaoId = vaos.get(0);
+        int finalSize = GLUtil.findSize(list);
+        GL30.glBindVertexArray(vaoId);
+
+        try(MemoryStack stack = MemoryStack.stackPush())
+        {
+            FloatBuffer buffer = stack.mallocFloat(finalSize);
+            for (Float[] array : list)
+            {
+                buffer.put(GLUtil.toPrimitiveFloatArray(array));
+            }
+
+            buffer.flip();
+
+            int vboId = GL15.glGenBuffers();
+            vbos.add(vboId);
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboId);
+            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+            GL20.glVertexAttribPointer(index, size, GL11.GL_FLOAT, false, 4 * size, 0);
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        }
+
+        GL30.glBindVertexArray(0);
+
+        return finalSize;
+    }
+
+    private ArrayList<Cube> loadGrasses()
+    {
+        ArrayList<Cube> allCubes = new ArrayList<>();
+        ArrayList<DrawData> allDrawData = new ArrayList<>();
+
+        for (Grass grass : grasses)
+        {
+            allCubes.addAll(grass.getCubes());
+        }
+
+        for (Cube cube : allCubes)
+        {
+            allDrawData.add(cube.getDrawData());
+        }
+
+        ArrayList<Float[]> positions = collectPositions(allDrawData);
+        ArrayList<Float[]> normals = collectNormals(allDrawData);
+        ArrayList<Float[]> textureCoordinates = collectTextureCoordinates(allDrawData);
+
+        setVaoIndex(positions, 0, 3, startPositionIndexForGrassCubes);
+        setVaoIndex(textureCoordinates, 1, 2, startTextureIndexForGrassCubes);
+        setVaoIndex(normals, 2, 3, startNormalIndexForGrassCubes);
+
+        return allCubes;
+    }
+
+    private void setVaoIndex(ArrayList<Float[]> list, int index, int size, int startingIndex)
     {
         int vaoId = vaos.get(0);
         GL30.glBindVertexArray(vaoId);
@@ -279,7 +378,7 @@ public class MainGL
             vbos.add(vboId);
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboId);
             GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
-            GL20.glVertexAttribPointer(index, size, GL11.GL_FLOAT, false, 4 * size, 0);
+            GL20.glVertexAttribPointer(index, size, GL11.GL_FLOAT, false, 4 * size, startingIndex);
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         }
 
@@ -405,6 +504,20 @@ public class MainGL
         clock.setCubeTransformationData("Hour bar", new Vector3f(9.6f / 25.0f, 4f / 25.0f, 1f / 25.0f), RotationAxisType.ParallelX);
         objectsMap.put("Clock", clock);
         objects.add(clock);
+
+        // Floor
+        GLObject floor = new GLObject();
+        floor.addCube(new Vector3f(0.0f, 15.5f / 25.0f, 1.0f / 25.0f), 20.0f / 25.0f, 1.0f / 25.0f, 20.0f / 25.0f,
+                Visibility.VisibleOutside, "textures\\floorTile.jpg", 2.0f / 25.0f, 2.0f / 25.0f);
+        objectsMap.put("Floor", floor);
+        objects.add(floor);
+
+        // outside lol
+        GLObject yard = new GLObject();
+        yard.addCube(new Vector3f(0.0f, 15.6f / 25.0f, 1.0f / 25.0f), 100.0f / 25.0f, 1.0f / 25.0f, 100.0f / 25.0f,
+                Visibility.VisibleOutside, "textures\\yardTile.jpg", 4.0f / 25.0f, 4.0f / 25.0f);
+        objectsMap.put("Yard", yard);
+        objects.add(yard);
 //
 //        //Skybox
 //        GLObject skybox = new GLObject();
@@ -436,6 +549,13 @@ public class MainGL
 //            {
 //                normalRenderer.render(object, camera, diffuseColor);
 //            }
+//            for (Grass grass : grasses)
+//            {
+//                grass.addParticle();
+//            }
+//
+//            ArrayList<Cube> cubes = loadGrasses();
+
             int cubeCounter = 0;
 
             for (GLObject object : objects)
@@ -455,6 +575,24 @@ public class MainGL
                 normalRenderer.render(object, camera, diffuseColor, cubeCounter, selectionEffect, alpha);
                 cubeCounter += object.getCubicParts().size();
             }
+
+            for (Tree tree : trees)
+            {
+                float selectionEffect = 1.0f;
+                float alpha = 1.0f;
+
+                normalRenderer.render(tree, camera, diffuseColor, cubeCounter, selectionEffect, alpha);
+                cubeCounter += tree.getNumberOfTrees();
+            }
+
+//            for (Cube cube : cubes)
+//            {
+//                float selectionEffect = 1.0f;
+//                float alpha = 1.0f;
+//
+//                normalRenderer.renderParticleCube(cube, camera, diffuseColor, cubeCounter, selectionEffect, alpha);
+//                cubeCounter++;
+//            }
 
             // Poll for window events. The key callback above will only be
             // invoked during this call.

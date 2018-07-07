@@ -2,6 +2,7 @@ package movement;
 
 import camera.Camera;
 import model.GLObject;
+import model.Tree;
 import model.shape.Cube;
 import util.Matrix4f;
 import util.Vector3f;
@@ -16,15 +17,17 @@ public class MovementHandler
 {
     private Camera camera;
     private HashMap<String, GLObject> objectMap;
+    private ArrayList<Tree> trees;
     private boolean doorSelected;
     private boolean windowSelected;
 
     private Time time;
 
-    public MovementHandler(Camera camera, HashMap<String, GLObject> objectMap)
+    public MovementHandler(Camera camera, HashMap<String, GLObject> objectMap, ArrayList<Tree> trees)
     {
         this.camera = camera;
         this.objectMap = objectMap;
+        this.trees = trees;
         this.doorSelected = false;
         this.time = new Time();
     }
@@ -68,7 +71,7 @@ public class MovementHandler
 
             if (object == table)
             {
-                collisionDistance = 0.15f;
+                collisionDistance = 0.14f;
             }
 
             ArrayList<Cube> cubes = object.getCubicParts();
@@ -78,6 +81,23 @@ public class MovementHandler
                 camera.setPosition(camera.getPosition().subtract(speedVector));
             }
         }
+
+        for (Tree tree : trees)
+        {
+            float collisionDistance = 0.05f;
+
+            if (isCollision(tree, collisionDistance))
+            {
+                camera.setPosition(camera.getPosition().subtract(speedVector));
+            }
+        }
+    }
+
+    private boolean isCollision(Tree tree, float collisionDistance)
+    {
+        float distance = tree.getBody().getDistance(camera.getPosition());
+
+        return distance < collisionDistance && distance > -collisionDistance;
     }
 
     public void handleCollisions(float ySpeed)
@@ -124,13 +144,13 @@ public class MovementHandler
         Cube mainPart = door.getCubicParts().get(0);
         float distance = mainPart.getDistance(camera.getPosition(), door.getTransformationMatrix());
 
-        doorSelected = distance < 0.3 && distance > -0.3;
+        doorSelected = distance < 0.25 && distance > -0.25;
 
         GLObject window = objectMap.get("Window");
         mainPart = window.getCubicParts().get(0);
         distance = mainPart.getDistance(camera.getPosition(), window.getTransformationMatrix());
 
-        windowSelected = distance < 0.3 && distance > -0.3;
+        windowSelected = distance < 0.25 && distance > -0.25;
     }
 
     public void open()

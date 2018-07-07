@@ -71,7 +71,7 @@ public class Camera
                 ySpeed = 0.0f;
                 yAcceleration = 0.0f;
             }
-            movementHandler.handleCollisions(ySpeed);
+//            movementHandler.handleCollisions(ySpeed);
         }
 
         xSpeed += xAcceleration;
